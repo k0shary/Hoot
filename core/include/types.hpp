@@ -8,26 +8,22 @@ namespace hoot
   namespace core 
   {
     //2d cooridnates
-    struct Location 
-    {
+    struct Location {
       double lat;
       double lon;
     };
     //Polygons for borders
-    struct Polygon 
-    {
+    struct Polygon {
       std::vector<Location> vertices;
 
     };
     //Policy for boundaries
-    enum class PolicyType 
-    {
+    enum class PolicyType {
       RADIAL, //harvesine 
       POLYGONAL //ray casting
     };
     //Instance Policies
-    struct InstancePolicy 
-    {
+    struct InstancePolicy {
       std::string id;
       std::string name;
       PolicyType type;
@@ -36,15 +32,13 @@ namespace hoot
       Polygon boundary_polygon;  ///used for polygons
     };
     //user profile and location model...very rough may be changed in the future 
-    struct User 
-    {
+    struct User {
       std::string id;
       std::string name;
       Location location;
     };
     ///rule evaluation
-    struct PolicyDecision
-    {
+    struct PolicyDecision {
       bool allowed;
       double distance_km;
       std::string rejection_reason;

@@ -12,8 +12,7 @@ namespace hoot {
       public:
         
         ///Degree to radian conversion for GPS
-        static inline double DegToRad(double deg)
-        {
+        static inline double DegToRad(double deg) {
           return deg * (PI/180);
         };
         ///Haversine formula
