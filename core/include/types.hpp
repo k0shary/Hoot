@@ -3,10 +3,8 @@
 #include <vector>
 #include <string>
 
-namespace hoot 
-{
-  namespace core 
-  {
+namespace hoot {
+  namespace core {
     //2d cooridnates
     struct Location {
       double lat;

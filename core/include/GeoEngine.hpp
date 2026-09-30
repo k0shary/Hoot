@@ -7,8 +7,7 @@ namespace hoot {
     static const double PI = 3.1415926535;
     static const double EARTH_RADIUS_KM = 6378.14;
 
-    class GeoEngine
-    {
+    class GeoEngine {
       public:
         
         ///Degree to radian conversion for GPS
@@ -23,7 +22,7 @@ namespace hoot {
         static bool isInsideBoundingBox(Location point, const Polygon& polygon);
 
     };
-  };
-};
+  }
+}
 #endif // !HOOT_CORE_GEO_ENGINE
 
