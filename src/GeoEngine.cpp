@@ -23,7 +23,42 @@ namespace hoot {
       double c = 2 * std::asin(std::sqrt(a));
 
       return EARTH_RADIUS_KM * c; 
-
     }
+    bool isInsideBoundingBox(Location point, const Polygon& polygon) {
+      ///Guard clause incase
+      if (polygon.vertices.empty()) return false;
+
+      //Initializing bounding 
+      double min_lat = polygon.vertices[0].lat;
+      double max_lat = polygon.vertices[0].lat;
+      double max_lon = polygon.vertices[0].lon;
+      double min_lon = polygon.vertices[0].lon;
+
+      //Scan to calculate min and max coordinates
+      for (size_t i = 0; i < polygon.vertices.size(); i++) {
+        const Location& v = polygon.vertices[i];
+
+        if (v.lat < min_lat) {
+          min_lat = v.lat 
+        };
+        
+        if (v.lat > max_lat) {
+          max_lat = v.lat 
+        };
+        if (v.lon < min_lon) {
+          min_lon = v.lon 
+        };
+        if (v.lon > max_lon) {
+          max_lon = v.lon 
+        };
+      }
+      //Returns true if point lies within bounds
+      return (point.lat >= min_lat &&
+              point.lat <= max_lat &&
+              point.lon >= min_lon &&
+              point.lon <= max_lon);
+    }
+
+
   }
 }

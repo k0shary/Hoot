@@ -16,10 +16,10 @@ namespace hoot {
         };
         ///Haversine formula
         static double haversineDistance (Location p1, Location p2);
-        //Ray casting algorithm
-        static bool isPointInPolygon(Location point, const Polygon& polygon);
         //fast bounding
         static bool isInsideBoundingBox(Location point, const Polygon& polygon);
+        //Ray casting algorithm
+        static bool isPointInPolygon(Location point, const Polygon& polygon);
 
     };
   }
