@@ -39,17 +39,17 @@ namespace hoot {
         const Location& v = polygon.vertices[i];
 
         if (v.lat < min_lat) {
-          min_lat = v.lat 
+          min_lat = v.lat; 
         };
         
         if (v.lat > max_lat) {
-          max_lat = v.lat 
+          max_lat = v.lat;
         };
         if (v.lon < min_lon) {
-          min_lon = v.lon 
+          min_lon = v.lon; 
         };
         if (v.lon > max_lon) {
-          max_lon = v.lon 
+          max_lon = v.lon; 
         };
       }
       //Returns true if point lies within bounds
