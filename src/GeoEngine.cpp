@@ -24,7 +24,7 @@ namespace hoot {
 
       return EARTH_RADIUS_KM * c; 
     }
-    bool isInsideBoundingBox(Location point, const Polygon& polygon) {
+    bool GeoEngine::isInsideBoundingBox(Location point, const Polygon& polygon) {
       ///Guard clause incase
       if (polygon.vertices.empty()) return false;
 
@@ -58,7 +58,32 @@ namespace hoot {
               point.lon >= min_lon &&
               point.lon <= max_lon);
     }
-
-
+    bool GeoEngine::isPointInPolygon(Location point, const Polygon& polygon) {
+    if (!isInsideBoundingBox(point, polygon)) {
+      return false;
+    }
+    bool inside = false;
+    size_t n = polygon.vertices.size();
+    //J at the last vertex
+    size_t j = n - 1;
+    for (size_t i = 0; i < n; i++) {
+      const auto& v1 = polygon.vertices[i];
+      const auto& v2 = polygon.vertices[j];
+      
+      //ray casting math, checks if it crosses edge between v1 and v2
+      bool intersect = ((v1.lat > point.lat) != (v2.lat > point.lat))
+                      &&
+                      (point.lon < (v2.lon - v1.lon)
+                       *(point.lat - v1.lat)
+                       /(v2.lat - v1.lat) + v1.lon);
+      if (intersect) {
+        inside = !inside;
+      }
+      ///move j to the current i for next iteration
+      j = i;
+    }
+    return inside;
+  }
   }
 }
+
