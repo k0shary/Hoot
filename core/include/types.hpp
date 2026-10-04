@@ -23,6 +23,7 @@ namespace hoot {
     //Instance Policies
     struct InstancePolicy {
       std::string id;
+      std::string places_pub_uri;
       std::string name;
       PolicyType type;
       Location center;      //used for radial
