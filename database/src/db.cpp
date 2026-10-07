@@ -7,6 +7,8 @@ namespace hoot {
       ///attempts to open or create a database file
       if (sqlite3_open(path, &db) != SQLITE_OK) return nullptr;
 
+      sqlite3_exec(db, "PRAGMA foreign_keys = ON;", nullptr, nullptr, nullptr);
+
 
       ///define core schemas/tables
       const char* schema =
@@ -42,10 +44,14 @@ namespace hoot {
       sqlite3_finalize(stmt);
       return ok;
     }
+
+
     std::vector<core::InstancePolicy> load_policies(sqlite3* db) {
       std::vector<core::InstancePolicy> list;
       const char* sql = "SELECT id, uri, type, lat, lon, rad FROM policies;";
       sqlite3_stmt* stmt;
+
+
 
       if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         //step through each row in the query
@@ -60,7 +66,48 @@ namespace hoot {
           list.push_back(p);
         }
       }
-      ///freeing after loop completes
+      sqlite3_finalize(stmt);
+      return list;
+    }
+
+
+
+    bool save_post(sqlite3* db, const std::string& post_id, const std::string& content, const std::string& policy_id) {
+      const char* sql = "INSERT OR REPLACE INTO posts VALUES (?, ?, ?);"; 
+      sqlite3_stmt* stmt;
+
+      //prpevents sql injections
+      if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
+
+
+      ///binding c++ structs to sql parameters
+      sqlite3_bind_text(stmt, 1, post_id.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 2, content.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 3, policy_id.c_str(), -1, SQLITE_STATIC);
+
+      bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
+      sqlite3_finalize(stmt);
+      return ok;
+    }
+
+
+    std::vector<core::PostRecord> load_posts(sqlite3* db) {
+      std::vector<core::PostRecord> list;
+      const char* sql = "SELECT id, content, policy_id FROM posts;";
+      sqlite3_stmt* stmt;
+
+      if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        //step through each row in the query
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+          core::PostRecord post;
+          post.id = (const char*)sqlite3_column_text(stmt, 0);
+          post.content= (const char*)sqlite3_column_text(stmt, 1);
+          post.policy_id= (const char*)sqlite3_column_text(stmt, 2);
+          list.push_back(post);
+        }
+      }
+
+      ///freeing after loop completes      
       sqlite3_finalize(stmt);
       return list;
     }

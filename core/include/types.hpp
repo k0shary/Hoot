@@ -30,6 +30,13 @@ namespace hoot {
       double radius_km;     //same here
       Polygon boundary_polygon;  ///used for polygons
     };
+
+    struct PostRecord {
+      std::string id;
+      std::string content;
+      std::string policy_id;
+    };
+
     //user profile and location model...very rough may be changed in the future 
     struct User {
       std::string id;
