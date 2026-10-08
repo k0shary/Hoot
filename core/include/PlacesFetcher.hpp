@@ -7,6 +7,6 @@ namespace hoot {
     //Pure parsing
     bool parse_nominatim(const std::string& body, InstancePolicy& out);
     ///parse+network
-    bool fetch_place(const std::string& wuery, InstancePolicy& out); 
+    bool fetch_place(const std::string& query, InstancePolicy& out); 
   }
 }
