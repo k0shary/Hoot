@@ -1,3 +1,6 @@
 *.o 
 *.out 
 test_runner
+test.*
+test_*
+*/test*/*
