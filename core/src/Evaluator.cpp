@@ -1,4 +1,4 @@
-#include "../core/include/Evaluator.hpp"
+#include "../include/Evaluator.hpp"
 
 namespace hoot {
   namespace core {

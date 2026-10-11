@@ -1,4 +1,4 @@
-#include "../core/include/PlacesFetcher.hpp"
+#include "../include/PlacesFetcher.hpp"
 #include <curl/curl.h>
 #include <cstdlib>
 #include <iostream>

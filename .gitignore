@@ -4,3 +4,4 @@ test_runner
 test.*
 test_*
 */test*/*
+tests/

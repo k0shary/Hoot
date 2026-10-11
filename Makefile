@@ -2,17 +2,28 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -I core/include -I database/include
 LDFLAGS = -lsqlite3
 
-SRC = $(wildcard src/*.cpp) database/src/db.cpp
-OBJ = $(SRC:.cpp=.o)
+
+CORE_SRCS = core/src/Evaluator.cpp core/src/GeoEngine.cpp core/src/PlacesFetcher.cpp
+DB_SRCS = database/src/db.cpp
+
+OBJS = $(CORE_SRCS:.cpp=.o) $(DB_SRCS:.cpp=.o)
 TARGET = hoot
 
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
-	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
+
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+
+test_evaluator: tests/test_evaluator.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) tests/test_evaluator.cpp $(OBJS) -o build/$@ $(LDFLAGS)
+
+test_db: tests/test_db.cpp $(OBJS)
+	$(CXX) $(CXXFLAGS) tests/test_db.cpp $(OBJS) -o build/$@ $(LDFLAGS)
+
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f core/src/*.o database/src/*.o $(TARGET) build/*

@@ -1,5 +1,5 @@
 #include <cmath>
-#include "../core/include/GeoEngine.hpp"
+#include "../include/GeoEngine.hpp"
 
 namespace hoot {
   namespace core {
