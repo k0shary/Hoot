@@ -1,12 +1,14 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -I core/include -I database/include
-LDFLAGS = -lsqlite3
+CXXFLAGS = -std=c++17 -Wall -I core/include -I database/include -I network/include
+LDFLAGS = -lsqlite3 -lcurl
 
 
 CORE_SRCS = core/src/Evaluator.cpp core/src/GeoEngine.cpp core/src/PlacesFetcher.cpp
 DB_SRCS = database/src/db.cpp
+NETWORK_SRCS = network/src/server.cpp network/src/main.cpp
 
-OBJS = $(CORE_SRCS:.cpp=.o) $(DB_SRCS:.cpp=.o)
+
+OBJS = $(CORE_SRCS:.cpp=.o) $(DB_SRCS:.cpp=.o) $(NETWORK_SRCS:.cpp=.o)
 TARGET = hoot
 
 all: $(TARGET)
