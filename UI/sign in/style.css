@@ -1,0 +1,57 @@
+html {
+  background-color: lightgreen;
+  background-position: center;
+}
+
+.input-group {
+  transform: translateX(90px);
+  padding: 0 10px;
+  box-sizing: border-box;
+  background: linear-gradient(to top, #E7E6E4, #FFFFFF);
+  border: 1px solid #E7E6E4;
+  border-bottom-color: #F7F7F6;
+  border-radius: 4px;
+  margin: 10% 20% 0 60%;
+}
+
+#login-username,
+#login-password {
+  width: 100%;
+  box-sizing: border-box;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.sign-in {
+  padding: 5px;
+  margin: 20px auto;
+  background: blue;
+}
+
+.new-group {
+  transform: translateX(90px);
+  padding: 0 10px;
+  box-sizing: border-box;
+  background: linear-gradient(to top, #E7E6E4, #FFFFFF);
+  border: 1px solid #E7E6E4;
+  border-bottom-color: #F7F7F6;
+  border-radius: 4px;
+  margin: 10px 20% 0 60%;
+}
+#sign-up-username,
+#sign-up-password, 
+#sign-up-email{ 
+  width: 100%;
+  box-sizing: border-box;
+  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.sign-up {
+  padding: 5px;
+  margin: 20px auto;
+  background: green;
+}
+
+
+

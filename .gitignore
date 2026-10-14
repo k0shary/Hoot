@@ -6,3 +6,7 @@ test_*
 */test*/*
 tests/
 .*
+*.png
+*.webp
+*.jpg
+*.jpeg
