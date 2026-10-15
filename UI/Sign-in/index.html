@@ -5,6 +5,7 @@
     <title>Hoot</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<link rel="stylesheet" href="../UIFONT/web/inter.css">
   <body>
     <main>
       <section>
@@ -24,17 +25,22 @@
 
             <button class="sign-in">Sign in</button>
 
-          <label class="remember">
-            <input type="checkbox" value="1" name="remember_me" tabindex="3">
-            <span>Remember me</span>
-          </label>
 
+            <div class="login-options">
+              <label class="remember">
+                <input type="checkbox" name="remember_me" value="1">
+                <span>Remember me</span>
+              </label>
 
-            <p class="Forget"><a href="#">Forgot your password?</a></p>
+              <p class="Forget">
+                <a href="#">Forgot your password?</a>
+              </p>
             </div>
 
+          </div>
+
             <div class="new-group">
-            <h5 class="title">New to Hoot? Sign up</h5>
+            <h5 class="title"><em><b>New to Hoot?</b></em> Sign up</h5>
             <form action="">
 
               <label for="email"></label>
@@ -47,9 +53,13 @@
               <input type="password" placeholder="Password" id="sign-up-password">
           </form>
 
-          <button class="sign-up">Sign up</button>
-          
+          <button class="sign-up">Sign up</button>          
         </div>
+
+
+            <div class="front-text">
+            </div>
+
       </section>
     </main>
     

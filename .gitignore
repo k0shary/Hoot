@@ -7,6 +7,7 @@ test_*
 tests/
 .*
 *.png
-*.webp
 *.jpg
 *.jpeg
+font/*
+UI/UIFONT/*
