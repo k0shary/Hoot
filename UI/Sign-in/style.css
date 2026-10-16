@@ -1,14 +1,20 @@
-html {
-  /*background-color: lightgreen;*/
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
   background-image: url("new1.webp");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  height: 100vh;
   font-family: "Inter", sans-serif;
   letter-spacing: -0.01em;
 }
-
 
 .input-group {
   transform: translateX(90px);
@@ -42,7 +48,9 @@ html {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 5px;
+  box-sizing: border-box;
   margin: 0 0 5px;
   font-size: 11px;
 }
@@ -100,13 +108,53 @@ html {
   background: linear-gradient(90deg, #4DFE9A 0%, #12FD65 100%);
   font-weight: 500;
 }
+
 .front-text {
+  position: absolute;
+  top: 40%;
+  left: 52%;
+  transform: translate(-30%, -90%);
+  text-align: center;
+  width: 80%;
+  white-space: normal;
+  pointer-events: none;
+
+}
+.front-text-header {
   color: #eee;
-  font-size: 20px;
+  font-size: clamp(12px, 1.2vw, 14px);
+  font-weight: 600;
+  line-height: 22px;
+  text-align: left;
+  text-shadow: #000 0 1px 2px;
+  margin: 0;
+}
+
+.front-text-text{
+  color: #eee;
+  font-size: clamp(14px, 1.2vw, 20px);
   font-weight: 300;
   line-height: 22px;
   text-align: left;
   text-shadow: #000 0 1px 2px;
+  margin: 0;
+
 }
 
 
+@media (max-width: 900px) {
+  .input-group,
+  .new-group {
+    transform: none;
+    margin: 20px auto;
+    width: 80%;
+  }
+
+  .front-text {
+    position: static;
+    transform: none;
+    width: 90%;
+    margin: 30px auto;
+    white-space: normal;
+  }
+}
