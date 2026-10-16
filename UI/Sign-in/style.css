@@ -111,13 +111,13 @@ body {
 
 .front-text {
   position: absolute;
-  top: 40%;
-  left: 52%;
+  top: 50%;
+  left: 36%;
+  right:50%;
   transform: translate(-30%, -90%);
   text-align: center;
-  width: 80%;
+  width: 30%;
   white-space: normal;
-  pointer-events: none;
 
 }
 .front-text-header {
