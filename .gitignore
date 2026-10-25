@@ -11,3 +11,4 @@ tests/
 *.jpeg
 font/*
 UI/UIFONT/*
+*.db
