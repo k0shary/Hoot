@@ -25,12 +25,46 @@ body {
     justify-content: center;
     align-items: flex-start;
     border-radius: 4px;
-    padding: 80px 20px;
+    padding: 50px 20px;
 }
 
+.upper-bar
+{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.nav-bar
+{
+
+    color: #333;
+    font-size: 14px;
+    height:40px;
+    background-color: #252525;
+    box-shadow: 0 2px 3px rgba(0,0,0,.25);
+}
+.search-bar
+{
+    position: fixed;
+    margin-top: 6px;
+    top: 0px;
+    left: 80%;
+}
+.search-bar input:focus 
+{
+    outline: none;
+    box-shadow: none;
+}
 .main-profile
 {
     position: relative;
+    top:0px;
+    left:0;
+    z-index: 1000;
     width: 580px;
     height: auto;               
     border: 1px solid #e1e8ed;
@@ -256,7 +290,7 @@ body {
 
 .hoot-text{
   position: relative;
-  font-size 14px;
+  font-size: 16px;
   bottom: 50px;
   right: -75px;
   font-weight:500;

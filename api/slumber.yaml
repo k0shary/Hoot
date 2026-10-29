@@ -1,0 +1,30 @@
+profiles:
+  local:
+    name: Local
+    data:
+      base_url: http://localhost:8080
+
+requests:
+  send-inbox-message-Odense:
+    method: POST
+    url: "{{ base_url }}/inbox"
+    body:
+      type: json
+      data:
+        id: test-post-001
+        content: Hello from downtown Odense!
+        location:
+          lat: 55.39590
+          lon: 10.38830
+  
+  send-inbox-message-Tokyo:
+    method: POST
+    url: "{{ base_url }}/inbox"
+    body:
+      type: json
+      data:
+        id: test-post-001
+        content: Hello from Tokyo!
+        location:
+          lat: 35.6762 
+          lon: 139.6503 
