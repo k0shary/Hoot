@@ -96,8 +96,8 @@ void server::start() {
                 res.set_redirect("/Profile/index.html");
                 });
 
-        if (!svr.set_mount_point("/", "./UI")) {
-            std::cerr << "Mount point failed: ./UI not found (wrong working directory?)\n";
+        if (!svr.set_mount_point("/", "./ui")) {
+            std::cerr << "Mount point failed: ./ui not found (wrong working directory?)\n";
         }
 
         std::cout << "Hoot server starting on port " << port_ << "...\n";
