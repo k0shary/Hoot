@@ -20,14 +20,17 @@ namespace hoot {
         "   id TEXT PRIMARY KEY, uri TEXT, type INT, lat REAL, lon REAL, rad REAL, vertices TEXT);"
         "CREATE TABLE IF NOT EXISTS posts ("
         "   id TEXT PRIMARY KEY, content TEXT, policy_id TEXT,"
-        "   FOREIGN KEY(policy_id) REFERENCES policies(id));";
+        "   FOREIGN KEY(policy_id) REFERENCES policies(id));"
+        "CREATE TABLE IF NOT EXISTS profiles ("
+        "  username TEXT PRIMARY KEY, display_name TEXT, bio TEXT, avatar_url TEXT, cover_url TEXT, background_url TEXT, custom_css TEXT);";
+           
 
       //run schema init script
       sqlite3_exec(db, schema, nullptr, nullptr, nullptr);
       return db;
     }
 
-    
+    ////policies  
     bool save_policy(sqlite3* db, const core::InstancePolicy& p) {
       const char* sql = "INSERT OR REPLACE INTO policies VALUES (?, ?, ?, ?, ?, ?, ?);";
       sqlite3_stmt* stmt;
@@ -104,8 +107,6 @@ namespace hoot {
       return list;
     }
 
-
-
     bool save_post(sqlite3* db, const std::string& post_id, const std::string& content, const std::string& policy_id) {
       const char* sql = "INSERT OR REPLACE INTO posts VALUES (?, ?, ?);"; 
       sqlite3_stmt* stmt;
@@ -124,26 +125,67 @@ namespace hoot {
       return ok;
     }
 
-
     std::vector<core::PostRecord> load_posts(sqlite3* db) {
-      std::vector<core::PostRecord> list;
-      const char* sql = "SELECT id, content, policy_id FROM posts;";
+        std::vector<core::PostRecord> list;
+        const char* sql = "SELECT id, content, policy_id FROM posts;";
+        sqlite3_stmt* stmt;
+
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+
+        //step through each row in the query
+            while (sqlite3_step(stmt) == SQLITE_ROW) {
+                core::PostRecord post;
+                post.id = (const char*)sqlite3_column_text(stmt, 0);
+                post.content= (const char*)sqlite3_column_text(stmt, 1);
+                post.policy_id= (const char*)sqlite3_column_text(stmt, 2);
+                list.push_back(post);
+            }
+        }
+        sqlite3_finalize(stmt);
+        return list;
+    }
+    //posts
+    bool save_profile(sqlite3* db, const ProfileData& p) {
+      const char* sql = "INSERT OR REPLACE INTO profiles (username, display_name, bio, avatar_url, background_url, cover_url, custom_css) VALUES (?, ?, ?, ?, ?, ?, ?);"; 
       sqlite3_stmt* stmt;
 
-      if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
-        //step through each row in the query
-        while (sqlite3_step(stmt) == SQLITE_ROW) {
-          core::PostRecord post;
-          post.id = (const char*)sqlite3_column_text(stmt, 0);
-          post.content= (const char*)sqlite3_column_text(stmt, 1);
-          post.policy_id= (const char*)sqlite3_column_text(stmt, 2);
-          list.push_back(post);
-        }
-      }
+      //prpevents sql injections
+      if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
 
-      ///freeing after loop completes      
+
+      ///binding c++ structs to sql parameters
+      sqlite3_bind_text(stmt, 1, p.username.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 2, p.display_name.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 3, p.bio.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 4, p.avatar_url.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 5, p.cover_url.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 6, p.background_url.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 7, p.custom_css.c_str(), -1, SQLITE_STATIC);
+
+      bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
       sqlite3_finalize(stmt);
-      return list;
+      return ok;
+    }
+
+
+      bool load_profile(sqlite3* db, const std::string username, ProfileData& p){
+      const char* sql = "SELECT username, display_name, bio, avatar_url, background_url, cover_url, custom_css FROM profiles WHERE username = ?;";
+      sqlite3_stmt* stmt;
+      if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
+      sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+      bool found = false;
+      if (sqlite3_step(stmt) == SQLITE_ROW) { 
+          p.username  = (const char*)sqlite3_column_text(stmt, 0);
+          p.display_name= (const char*)sqlite3_column_text(stmt, 1);
+          p.bio= (const char*)sqlite3_column_text(stmt, 2);
+          p.avatar_url= (const char*)sqlite3_column_text(stmt, 3);
+          p.cover_url= (const char*)sqlite3_column_text(stmt, 4);
+          p.background_url= (const char*)sqlite3_column_text(stmt, 5);
+          p.custom_css= (const char*)sqlite3_column_text(stmt, 6);
+          found = true;
+        }
+      sqlite3_finalize(stmt);
+      return found;
     }
     void close(sqlite3* db) {
       if (db) sqlite3_close(db);
