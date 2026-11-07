@@ -28,4 +28,4 @@ test_db: tests/test_db.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) tests/test_db.cpp $(OBJS) -o build/$@ $(LDFLAGS)
 
 clean:
-	rm -f core/src/*.o database/src/*.o $(TARGET) build/*
+	rm -f core/src/*.o database/src/*.o network/src/*.o  $(TARGET) build/*
