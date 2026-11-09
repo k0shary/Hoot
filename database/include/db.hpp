@@ -13,7 +13,7 @@ namespace hoot {
           std::string cover_url;
           std::string background_url;
           std::string bio;
-          std::string custom_css;
+          // std::string custom_css;
 
       };
 

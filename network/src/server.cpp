@@ -21,7 +21,85 @@ std::string read_ui(const std::string& path){
     return buf.str();
 }
 
+std::string create_profile_page(sqlite3* database, const std::string& username){
+    std::ifstream file("./ui/Profile/index.html");
+    if (!file.is_open())
+        return "Not found";
 
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string html = buffer.str();
+
+    hoot::db::ProfileData p;
+    if (!hoot::db::load_profile(database, username, p)){
+        p = {username, "Anon", "", "smile.png", "", ""};
+    }
+
+    std::string posts_html;
+    auto posts = hoot::db::load_posts(database);
+    for (const auto& post : posts) {
+        posts_html += "<div class=\"Hoots\"><div class=\"Hoot-content\">"
+                      "<div class=\"hoot-avatar\"><img src=\"" + p.avatar_url + "\" alt=\"Avatar\"></div>"
+                      "<div class=\"hoot-display-name\"><p><strong>" + p.display_name + "</strong></p></div>"
+                      "<div class=\"hoot-username\"><p>@" + p.username + "@hoot.sdu.dk</p></div>"
+                      "<div class=\"hoot-text\"><p>" + post.content + "</p></div>"
+                      "</div></div>";
+    }
+
+    if (posts_html.empty()) {
+        posts_html = "<div class=\"Hoots\"><div class=\"Hoot-content\"><div class=\"hoot-text\"><p>Nothing here yet</p></div></div></div>";
+    }
+
+    size_t pos;
+
+        pos = html.find("_username_");
+        if (pos != std::string::npos) {
+            html.replace(pos, std::string("_username_").length(), p.username);
+
+        }
+
+        pos = html.find("_display_name_");
+        if (pos != std::string::npos) {
+            html.replace(pos, std::string("_display_name_").length(), p.display_name);
+
+        }
+
+        pos = html.find("_bio_");
+        if (pos != std::string::npos) {
+            html.replace(pos, std::string("_bio_").length(), p.bio);
+
+        }
+
+        pos = html.find("_avatar_url_");
+        if (pos != std::string::npos) {
+            html.replace(pos, std::string("_avatar_url_").length(), p.avatar_url);
+
+        }
+
+        pos = html.find("_cover_url_");
+        if (pos != std::string::npos) {
+            html.replace(pos, std::string("_cover_url_").length(), p.cover_url);
+
+        }
+
+        pos = html.find("_background_url_");
+        if (pos != std::string::npos) {
+            html.replace(pos, std::string("_background_url_").length(), p.background_url);
+
+        }
+
+        pos = html.find("_posts_feed_");
+         if (pos != std::string::npos) {
+            html.replace(pos, std::string("_posts_feed_").length(), posts_html);
+         }
+        // pos = html.find("_custom_css_");
+        // if (pos != std::string::npos) {
+        //     html.replace(pos, std::string("_custom_css_").length(), p.custom_css);
+        //
+        // }
+
+        return  html;
+}
 void handle_inbox(const httplib::Request& req, httplib::Response& res){
   std::cout << "Recieved incoming activity from activitypub on inbox" << std::endl;
 
@@ -73,6 +151,20 @@ void handle_inbox(const httplib::Request& req, httplib::Response& res){
     }
 }
 
+
+void handle_profile(const httplib::Request& req, httplib::Response& res){
+    std::string uname = req.path_params.at("username");
+    
+    if (!g_server_instance) {
+        res.status = 500;
+        res.set_content("server error", "text/plain");
+        return ;
+    }
+
+    std::string html = create_profile_page(g_server_instance->db_, uname);
+    res.set_content(html, "text/html");
+}
+
 namespace hoot {
   namespace network {
 
@@ -92,9 +184,11 @@ void server::start() {
                 res.set_redirect("/Sign-in/index.html");
                 });
 
-        svr.Get("/profile", [](const httplib::Request&, httplib::Response& res) {
+        svr.Get("/Profile", [](const httplib::Request&, httplib::Response& res) {
                 res.set_redirect("/Profile/index.html");
                 });
+
+        svr.Get("/profile/:username", handle_profile);
 
         if (!svr.set_mount_point("/", "./ui")) {
             std::cerr << "Mount point failed: ./ui not found (wrong working directory?)\n";

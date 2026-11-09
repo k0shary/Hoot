@@ -146,7 +146,7 @@ namespace hoot {
     }
     //posts
     bool save_profile(sqlite3* db, const ProfileData& p) {
-      const char* sql = "INSERT OR REPLACE INTO profiles (username, display_name, bio, avatar_url, background_url, cover_url, custom_css) VALUES (?, ?, ?, ?, ?, ?, ?);"; 
+      const char* sql = "INSERT OR REPLACE INTO profiles (username, display_name, bio, avatar_url, background_url, cover_url) VALUES (?, ?, ?, ?, ?, ?);"; 
       sqlite3_stmt* stmt;
 
       //prpevents sql injections
@@ -160,7 +160,7 @@ namespace hoot {
       sqlite3_bind_text(stmt, 4, p.avatar_url.c_str(), -1, SQLITE_STATIC);
       sqlite3_bind_text(stmt, 5, p.cover_url.c_str(), -1, SQLITE_STATIC);
       sqlite3_bind_text(stmt, 6, p.background_url.c_str(), -1, SQLITE_STATIC);
-      sqlite3_bind_text(stmt, 7, p.custom_css.c_str(), -1, SQLITE_STATIC);
+      // sqlite3_bind_text(stmt, 7, p.custom_css.c_str(), -1, SQLITE_STATIC);
 
       bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
       sqlite3_finalize(stmt);
@@ -169,7 +169,7 @@ namespace hoot {
 
 
       bool load_profile(sqlite3* db, const std::string username, ProfileData& p){
-      const char* sql = "SELECT username, display_name, bio, avatar_url, background_url, cover_url, custom_css FROM profiles WHERE username = ?;";
+      const char* sql = "SELECT username, display_name, bio, avatar_url, background_url, cover_url FROM profiles WHERE username = ?;";
       sqlite3_stmt* stmt;
       if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) return false;
       sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
@@ -181,7 +181,7 @@ namespace hoot {
           p.avatar_url= (const char*)sqlite3_column_text(stmt, 3);
           p.cover_url= (const char*)sqlite3_column_text(stmt, 4);
           p.background_url= (const char*)sqlite3_column_text(stmt, 5);
-          p.custom_css= (const char*)sqlite3_column_text(stmt, 6);
+          // p.custom_css= (const char*)sqlite3_column_text(stmt, 6);
           found = true;
         }
       sqlite3_finalize(stmt);
