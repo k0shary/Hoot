@@ -21,6 +21,17 @@ std::string read_ui(const std::string& path){
     return buf.str();
 }
 
+    void replace_html(std::string& str, const std::string& old, const std::string& replacement){
+        if(old.empty())
+            return;
+
+        size_t pos = 0;
+        while ((pos = str.find(old, pos)) != std::string::npos){
+            str.replace(pos, old.length(), replacement);
+            pos += replacement.length();
+        }
+    }
+
 std::string create_profile_page(sqlite3* database, const std::string& username){
     std::ifstream file("./ui/Profile/index.html");
     if (!file.is_open())
@@ -39,9 +50,9 @@ std::string create_profile_page(sqlite3* database, const std::string& username){
     auto posts = hoot::db::load_posts(database);
     for (const auto& post : posts) {
         posts_html += "<div class=\"Hoots\"><div class=\"Hoot-content\">"
-                      "<div class=\"hoot-avatar\"><img src=\"" + p.avatar_url + "\" alt=\"Avatar\"></div>"
-                      "<div class=\"hoot-display-name\"><p><strong>" + p.display_name + "</strong></p></div>"
-                      "<div class=\"hoot-username\"><p>@" + p.username + "@hoot.sdu.dk</p></div>"
+                      // "<div class=\"hoot-avatar\"><img src=\"" + p.avatar_url + "\" alt=\"Avatar\"></div>"
+                      // "<div class=\"hoot-display-name\"><p><strong>" + p.display_name + "</strong></p></div>"
+                      // "<div class=\"hoot-username\"><p>@" + p.username + "@hoot.sdu.dk</p></div>"
                       "<div class=\"hoot-text\"><p>" + post.content + "</p></div>"
                       "</div></div>";
     }
@@ -50,56 +61,68 @@ std::string create_profile_page(sqlite3* database, const std::string& username){
         posts_html = "<div class=\"Hoots\"><div class=\"Hoot-content\"><div class=\"hoot-text\"><p>Nothing here yet</p></div></div></div>";
     }
 
-    size_t pos;
+        replace_html(html, "_username_", p.username);
+        replace_html(html, "_display_name_", p.display_name);
+        replace_html(html, "_bio_", p.bio);
+        replace_html(html, "_avatar_url_", p.avatar_url);
+        replace_html(html, "_cover_url_", p.cover_url);
+        replace_html(html, "_background_url_", p.background_url);
+        replace_html(html, "_posts_feed_", posts_html);
 
-        pos = html.find("_username_");
-        if (pos != std::string::npos) {
-            html.replace(pos, std::string("_username_").length(), p.username);
+        return  html;
+    }
 
-        }
 
-        pos = html.find("_display_name_");
-        if (pos != std::string::npos) {
-            html.replace(pos, std::string("_display_name_").length(), p.display_name);
 
-        }
 
-        pos = html.find("_bio_");
-        if (pos != std::string::npos) {
-            html.replace(pos, std::string("_bio_").length(), p.bio);
-
-        }
-
-        pos = html.find("_avatar_url_");
-        if (pos != std::string::npos) {
-            html.replace(pos, std::string("_avatar_url_").length(), p.avatar_url);
-
-        }
-
-        pos = html.find("_cover_url_");
-        if (pos != std::string::npos) {
-            html.replace(pos, std::string("_cover_url_").length(), p.cover_url);
-
-        }
-
-        pos = html.find("_background_url_");
-        if (pos != std::string::npos) {
-            html.replace(pos, std::string("_background_url_").length(), p.background_url);
-
-        }
-
-        pos = html.find("_posts_feed_");
-         if (pos != std::string::npos) {
-            html.replace(pos, std::string("_posts_feed_").length(), posts_html);
-         }
+    // size_t pos;
+    //
+    //     pos = html.find("_username_");
+    //     if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_username_").length(), p.username);
+    //
+    //     }
+    //
+    //     pos = html.find("_display_name_");
+    //     if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_display_name_").length(), p.display_name);
+    //
+    //     }
+    //
+    //     pos = html.find("_bio_");
+    //     if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_bio_").length(), p.bio);
+    //
+    //     }
+    //
+    //     pos = html.find("_avatar_url_");
+    //     if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_avatar_url_").length(), p.avatar_url);
+    //
+    //     }
+    //
+    //     pos = html.find("_cover_url_");
+    //     if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_cover_url_").length(), p.cover_url);
+    //
+    //     }
+    //
+    //     pos = html.find("_background_url_");
+    //     if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_background_url_").length(), p.background_url);
+    //
+    //     }
+    //
+    //     pos = html.find("_posts_feed_");
+    //      if (pos != std::string::npos) {
+    //         html.replace(pos, std::string("_posts_feed_").length(), posts_html);
+        // }
         // pos = html.find("_custom_css_");
         // if (pos != std::string::npos) {
         //     html.replace(pos, std::string("_custom_css_").length(), p.custom_css);
         //
         // }
 
-        return  html;
-}
 void handle_inbox(const httplib::Request& req, httplib::Response& res){
   std::cout << "Recieved incoming activity from activitypub on inbox" << std::endl;
 

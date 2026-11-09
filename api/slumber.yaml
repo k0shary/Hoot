@@ -28,3 +28,16 @@ requests:
         location:
           lat: 35.6762 
           lon: 139.6503 
+  
+
+  first-post:
+    method: POST
+    url: "{{ base_url }}/inbox"
+    body:
+      type: json
+      data:
+        id: test-post-001
+        content: updog!
+        location:
+          lat: 55.39590
+          lon: 10.38830

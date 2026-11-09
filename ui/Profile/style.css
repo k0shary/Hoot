@@ -16,10 +16,10 @@ body {
     letter-spacing: 0;
     color: #292f33;
     min-height: 100vh;
-    background-image: url("odense.webp");
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    /* background-image: url("odense.webp"); */
+    /* background-position: center; */
+    /* background-size: cover; */
+    /* background-repeat: no-repeat; */
     font-family: "Inter", sans-serif;
     display: flex;
     justify-content: center;
