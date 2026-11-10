@@ -21,8 +21,8 @@ namespace hoot {
     bool save_policy(sqlite3* db, const core::InstancePolicy& p);
     std::vector<core::InstancePolicy> load_policies(sqlite3* db);
 
-    bool save_post(sqlite3* db, const std::string& post_id, const std::string& content, const std::string& policy_id);
-    std::vector<core::PostRecord> load_posts(sqlite3* db);
+    bool save_post(sqlite3* db, const std::string& post_id, const std::string& content, const std::string& policy_id, const std::string& username);
+    std::vector<core::PostRecord> load_posts(sqlite3* db, const std::string& username);
 
     bool save_profile(sqlite3* db, const ProfileData& p);
     bool load_profile(sqlite3* db, const std::string username, ProfileData& p);

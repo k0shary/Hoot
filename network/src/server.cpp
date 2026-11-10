@@ -47,12 +47,12 @@ std::string create_profile_page(sqlite3* database, const std::string& username){
     }
 
     std::string posts_html;
-    auto posts = hoot::db::load_posts(database);
+    auto posts = hoot::db::load_posts(database, username);
     for (const auto& post : posts) {
-        posts_html += "<div class=\"Hoots\"><div class=\"Hoot-content\">"
-                      // "<div class=\"hoot-avatar\"><img src=\"" + p.avatar_url + "\" alt=\"Avatar\"></div>"
-                      // "<div class=\"hoot-display-name\"><p><strong>" + p.display_name + "</strong></p></div>"
-                      // "<div class=\"hoot-username\"><p>@" + p.username + "@hoot.sdu.dk</p></div>"
+        posts_html += "<div class=\"hoots-post\"><div class=\"Hoot-content\">"
+                       "<div class=\"hoot-avatar\"><img src=\"" + p.avatar_url + "\" alt=\"Avatar\"></div>"
+                       "<div class=\"hoot-display-name\"><p><strong>" + p.display_name + "</strong></p></div>"
+                       "<div class=\"hoot-username\"><p>@" + p.username + "@hoot.sdu.dk</p></div>"
                       "<div class=\"hoot-text\"><p>" + post.content + "</p></div>"
                       "</div></div>";
     }
@@ -128,7 +128,7 @@ void handle_inbox(const httplib::Request& req, httplib::Response& res){
 
   json j = json::parse(req.body, nullptr, false);
 
-  if (j.is_discarded() || !j.contains("location") || !j.contains("id") || !j.contains("content")) {
+  if (j.is_discarded() || !j.contains("location") || !j.contains("id") || !j.contains("content") || !j.contains("username")) {
       res.status = 400;
       res.set_content("{\"status\": \"error\", \"reason\": \"invalid json or missing fields\"}", "application/json");
       return;
@@ -137,6 +137,7 @@ void handle_inbox(const httplib::Request& req, httplib::Response& res){
 
   std::string post_id = j["id"].get<std::string>();
   std::string content= j["content"].get<std::string>();
+  std::string username= j["username"].get<std::string>();
 
 
   hoot::core::Location incoming_loc {j["location"]["lat"].get<double>(),
@@ -162,7 +163,13 @@ void handle_inbox(const httplib::Request& req, httplib::Response& res){
     matching_policy_id = policy.id;
   }
   if (globally_allowed) {
-      hoot::db::save_post(g_server_instance->db_, post_id, content, matching_policy_id);
+     bool saved =  hoot::db::save_post(g_server_instance->db_, post_id, content, matching_policy_id, username);
+     if (!saved) {
+         std::cerr << "Failed to save post\n";
+         res.status = 500;
+         res.set_content("Database save failed", "text/plain");
+         return;
+     }
 
         res.status = 200;
         res.set_content("{\"status\": \"Accepted\", \"message\": \"Location verified successfully.}\n", "application/json");

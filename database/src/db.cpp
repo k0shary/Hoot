@@ -1,5 +1,6 @@
 #include "../include/db.hpp"
 #include "nlohmann/json.hpp"
+#include <string>
 
 namespace hoot {
   namespace db {
@@ -19,7 +20,7 @@ namespace hoot {
         "CREATE TABLE IF NOT EXISTS policies ("
         "   id TEXT PRIMARY KEY, uri TEXT, type INT, lat REAL, lon REAL, rad REAL, vertices TEXT);"
         "CREATE TABLE IF NOT EXISTS posts ("
-        "   id TEXT PRIMARY KEY, content TEXT, policy_id TEXT,"
+        "   id TEXT PRIMARY KEY, content TEXT, policy_id TEXT, username TEXT,"
         "   FOREIGN KEY(policy_id) REFERENCES policies(id));"
         "CREATE TABLE IF NOT EXISTS profiles ("
         "  username TEXT PRIMARY KEY, display_name TEXT, bio TEXT, avatar_url TEXT, cover_url TEXT, background_url TEXT, custom_css TEXT);";
@@ -107,8 +108,9 @@ namespace hoot {
       return list;
     }
 
-    bool save_post(sqlite3* db, const std::string& post_id, const std::string& content, const std::string& policy_id) {
-      const char* sql = "INSERT OR REPLACE INTO posts VALUES (?, ?, ?);"; 
+    //posts
+    bool save_post(sqlite3* db, const std::string& post_id, const std::string& content, const std::string& policy_id, const std::string& username) {
+      const char* sql = "INSERT OR REPLACE INTO posts VALUES (?, ?, ?, ?);"; 
       sqlite3_stmt* stmt;
 
       //prpevents sql injections
@@ -119,20 +121,22 @@ namespace hoot {
       sqlite3_bind_text(stmt, 1, post_id.c_str(), -1, SQLITE_STATIC);
       sqlite3_bind_text(stmt, 2, content.c_str(), -1, SQLITE_STATIC);
       sqlite3_bind_text(stmt, 3, policy_id.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 4, username.c_str(), -1, SQLITE_STATIC);
 
       bool ok = (sqlite3_step(stmt) == SQLITE_DONE);
       sqlite3_finalize(stmt);
       return ok;
     }
 
-    std::vector<core::PostRecord> load_posts(sqlite3* db) {
+    std::vector<core::PostRecord> load_posts(sqlite3* db, const std::string& username) {
         std::vector<core::PostRecord> list;
-        const char* sql = "SELECT id, content, policy_id FROM posts;";
+        const char* sql = "SELECT id, content, policy_id FROM posts WHERE username=?;";
         sqlite3_stmt* stmt;
 
         if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
 
-        //step through each row in the query
+            sqlite3_bind_text(stmt, 1, username.c_str(), -1, SQLITE_STATIC);
+            //step through each row in the query 
             while (sqlite3_step(stmt) == SQLITE_ROW) {
                 core::PostRecord post;
                 post.id = (const char*)sqlite3_column_text(stmt, 0);
@@ -144,7 +148,8 @@ namespace hoot {
         sqlite3_finalize(stmt);
         return list;
     }
-    //posts
+
+    //profile
     bool save_profile(sqlite3* db, const ProfileData& p) {
       const char* sql = "INSERT OR REPLACE INTO profiles (username, display_name, bio, avatar_url, background_url, cover_url) VALUES (?, ?, ?, ?, ?, ?);"; 
       sqlite3_stmt* stmt;

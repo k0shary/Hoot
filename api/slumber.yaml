@@ -37,7 +37,20 @@ requests:
       type: json
       data:
         id: test-post-001
-        content: updog!
+        content: SHEEEEEEEEEEESH!
+        username: koshary
+        location:
+          lat: 55.39590
+          lon: 10.38830
+  third-post:
+    method: POST
+    url: "{{ base_url }}/inbox"
+    body:
+      type: json
+      data:
+        id: test-post-001
+        content: lol lmao xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxggddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddds!
+        username: koshary
         location:
           lat: 55.39590
           lon: 10.38830
