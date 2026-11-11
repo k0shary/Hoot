@@ -150,6 +150,7 @@ namespace hoot {
     }
 
     //profile
+    //saves profile into database
     bool save_profile(sqlite3* db, const ProfileData& p) {
       const char* sql = "INSERT OR REPLACE INTO profiles (username, display_name, bio, avatar_url, background_url, cover_url) VALUES (?, ?, ?, ?, ?, ?);"; 
       sqlite3_stmt* stmt;
@@ -173,6 +174,7 @@ namespace hoot {
     }
 
 
+    //loads profile from database
       bool load_profile(sqlite3* db, const std::string username, ProfileData& p){
       const char* sql = "SELECT username, display_name, bio, avatar_url, background_url, cover_url FROM profiles WHERE username = ?;";
       sqlite3_stmt* stmt;
